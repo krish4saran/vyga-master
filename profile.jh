@@ -1,0 +1,101 @@
+entity Profile{
+ 	userId Long required,
+    description TextBlob required,
+    active Boolean,
+    image ImageBlob,
+    video1 Blob,
+    video2 Blob,
+    backgroundChecked Boolean,
+    
+    created Instant required,
+    updated Instant required,
+    
+}
+
+entity Subject{
+	name String,
+    description String,
+    active Boolean,
+    created Instant,
+    updated Instant
+}
+
+entity Education{
+	course String,
+    university String,
+    start Integer,
+    end Integer
+}
+
+entity Experience{
+	title String required,
+    company String,
+    begin LocalDate required,
+    end LocalDate,
+    description Blob
+}
+
+enum LevelEnum{
+	BEGINNER,
+    INTERMEDIATE,
+    ADVANCED
+}
+
+entity Level{
+	name String
+}
+
+entity Review{
+	rating Integer required,
+    comments TextBlob required,
+    createdDate LocalDate required,
+    //this will be the student providing the review
+    userId Long required
+}
+
+entity Award{
+	name String required,
+    receivedDate LocalDate required,
+    institute String required
+  
+}
+
+/*Location available will be provided by configuration
+* so avoiding constraints for country
+*/
+entity Location{
+	city String required,
+    state String maxlength(2) required,
+    country String maxlength(3) required
+}
+
+
+
+enum LanguageEnum {
+    ENGLISH, SPANISH, HINDI, MALAYALAM, KANNADA, TELUGU, ORIYA, MARATHI, URDU, PUNJABI
+}
+
+entity Language{
+	language String
+}
+relationship ManyToMany {
+	Profile{subject} to Subject{profile}
+    Profile{language} to Language{profile}
+    Profile{level} to Level{profile}
+}
+
+relationship OneToMany {
+	Profile{education} to Education,
+    Profile{experience} to Experience,
+    Profile{review} to Review,
+    Profile{award} to Award
+}
+
+relationship OneToOne {
+	Profile{location} to Location
+}
+
+dto * with mapstruct
+service all with serviceImpl
+paginate Profile, Review with pagination
+search Profile with elasticsearch
